@@ -75,6 +75,13 @@ https://github.com/user-attachments/assets/bc7a0dae-c7d1-48c3-9b8e-497dfded7206
 
 
 
+                             Difficultés rencontrés
+Dans ce projet, nous avions rencontrés plusieurs problème particulièrement au niveau de l'accomplissement de certaines fonctionnalités comme par exemple celle qui demande d'enregistrer l'état du travail mais après plusieurs heures de recherches des solutions ont été trouvés.
+
+Merci à vous 😁
+
+
+
 
 
 
