@@ -1,4 +1,10 @@
+                  Membres du groupe
+                  
+1-ATTOKO Maurel
+2-GLELE Jefferson (Rapporteur)
+3-KITSO Kévin
 
+                  
 # Projet_POO
 Projet2 du TP de Programmation Evènementielle
 
