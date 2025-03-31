@@ -379,7 +379,7 @@ class MyCellule:
 
         if filename:
             try:
-                print(f"Chargement du fichier : {filename}")  # Debug
+                print(f"Chargement du fichier : {filename}") 
 
                 # Vérifier si le fichier est complètement vide
                 with open(filename, 'r', encoding='utf-8') as f:
