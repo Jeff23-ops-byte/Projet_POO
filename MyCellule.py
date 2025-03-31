@@ -7,8 +7,8 @@ import csv
 import pandas as pd
 
 
-class MyCellule:
-    def __init__(self, root):
+class MyCellule: #la classe principale qui gère l'interface graphique et les fonctionnalités
+    def __init__(self, root): #Fenêtre principale de l'application.
         self.root = root
         self.root.title('Notre CELLULE')
         self.root.geometry("800x600")
@@ -18,10 +18,10 @@ class MyCellule:
         self.style = ttk.Style(theme="flatly") 
 
         # Liste pour stocker les références des cellules
-        self.cellules = []
+        self.cellules = [] #Liste bidimensionnelle(double valeur) contenant les références des cellules
 
         # Historique des actions
-        self.history = []
+        self.history = [] #Liste pour stocker l'historique des modifications des cellules
         self.index_actuel = -1
 
         # Délimiteur par défaut
@@ -36,7 +36,9 @@ class MyCellule:
         self.mise_a_jour()
 
     def create_interface_graphique(self):
-        """Crée une grille de cellules dans l'interface graphique"""
+        """Crée une grille de cellules (21 lignes x 6 colonnes) avec des widgets Entry.
+Associe les touches directionnelles (<Up>, <Down>, <Left>, <Right>) pour naviguer entre les cellules.
+Configure le redimensionnement dynamique des lignes et colonnes."""
         # Frame pour contenir la grille
         self.grille_frame = ttk.Frame(self.root)
         self.grille_frame.grid(row=1, column=0, padx=20, pady=20, sticky="nsew")
@@ -68,7 +70,8 @@ class MyCellule:
             self.grille_frame.columnconfigure(j, weight=1)
 
     def create_context_menu(self):
-        """Crée un menu contextuel pour le clic dans les cellules"""
+        """Crée un menu contextuel (clic droit) avec les options :Copier,Coller,Effacer et
+associe le menu contextuel à chaque cellule"""
         self.menu_contextuel = tk.Menu(self.root, tearoff=0)
         self.menu_contextuel.add_command(label="Copier", command=self.copier_cellule)
         self.menu_contextuel.add_command(label="Coller", command=self.coller_cellule)
@@ -379,7 +382,7 @@ class MyCellule:
 
         if filename:
             try:
-                print(f"Chargement du fichier : {filename}") 
+                print(f"Chargement du fichier : {filename}")  # Debug
 
                 # Vérifier si le fichier est complètement vide
                 with open(filename, 'r', encoding='utf-8') as f:
@@ -438,6 +441,7 @@ class MyCellule:
                 messagebox.showerror("Erreur", f"Impossible de charger le fichier CSV :\n{str(e)}")
 
 
+#Crée la fenêtre principale et lance l'application
 if __name__ == "__main__":
     root = ttk.Window(themename="flatly")  
     app = MyCellule(root)
