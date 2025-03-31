@@ -1,5 +1,4 @@
 
-https://github.com/user-attachments/assets/9bde6cb0-1deb-4a60-93c9-129508cf8eb2
 # Projet_POO
 Projet2 du TP de Programmation Evènementielle
 
