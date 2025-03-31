@@ -110,7 +110,7 @@ class MyCellule:
 
     def deplacer_focus(self, x, y):
         """Déplace le focus vers la cellule à la position (x, y)"""
-        if 0 <= x < len(self.cellules) and 0 <= y < len(self.cellules[x]):
+        if 0 <= x < len(self.cellules) and  0 <= y < len(self.cellules[x]):
             self.cellules[x][y].focus_set()
 
     def navigateur(self):
@@ -124,7 +124,12 @@ class MyCellule:
 
         if filename:
             try:
-                with open(filename, 'r', encoding='utf-8') as f:# mode d'ouverture du fichier (read-only) et le type d'encodage
+                with open(filename, 'r', encoding='utf-8') as f:
+                    first_line = f.readline().strip()
+                    if not first_line:
+                        print("Le fichier est complètement vide.")  # Debug
+                        messagebox.showerror("Erreur", "Le fichier CSV est complètement vide.")
+                        return
                     reader = csv.reader(f, delimiter=self.delimiteur)
 
                     # Effacer toutes les cellules
@@ -159,37 +164,45 @@ class MyCellule:
                 cell.delete(0, tk.END)
 
     def fusionner_fichiers_csv(self):
-     """Fusionne plusieurs fichiers CSV dans les cellules"""
-     filetypes = (
-        ('Fichiers CSV', '*.csv'),
-        ('Tous les fichiers', '*.*')
-    )
-     # Demande à l'utilisateur de sélectionner plusieurs fichiers
-     filenames = fd.askopenfilenames(filetypes=filetypes)
-     if filenames:
-        try:
-            self.nettoyeur()
-            row_index = 0
+        """Fusionne plusieurs fichiers CSV dans les cellules"""
+        filetypes = (
+            ('Fichiers CSV', '*.csv'),
+            ('Tous les fichiers', '*.*')
+        )
 
-            for filename in filenames:
-                with open(filename, 'r', encoding='utf-8') as f:
-                    reader = csv.reader(f, delimiter=self.delimiteur)
-                    for row in reader:
-                        if row_index >= len(self.cellules):  # Limite de lignes
-                            break
-                        for col_index, value in enumerate(row):
-                            if col_index >= len(self.cellules[row_index]):  # Limite de colonnes
+        # Demande à l'utilisateur de sélectionner plusieurs fichiers
+        filenames = fd.askopenfilenames(filetypes=filetypes)
+
+        if filenames:
+            try:
+                self.nettoyeur()
+                row_index = 0
+
+                for filename in filenames:
+                    with open(filename, 'r', encoding='utf-8') as f:
+                        reader = csv.reader(f, delimiter=self.delimiteur)
+                        for row in reader:
+                            if row_index >= len(self.cellules):  # Limite de lignes
                                 break
-                            self.cellules[row_index][col_index].delete(0, tk.END)
-                            self.cellules[row_index][col_index].insert(0, value)
-                        row_index += 1
+                            for col_index, value in enumerate(row):
+                                if col_index >= len(self.cellules[row_index]):  # Limite de colonnes
+                                    break
+                                self.cellules[row_index][col_index].delete(0, tk.END)
+                                self.cellules[row_index][col_index].insert(0, value)
+                            row_index += 1
 
-            # Enregistrer l'état après la fusion
-            self.mise_a_jour()
+                # Enregistrer l'état après la fusion
+                self.mise_a_jour()
 
-        except Exception as e:
-            messagebox.showerror("Erreur", f"Impossible de fusionner les fichiers:\n{str(e)}")
-
+            except FileNotFoundError:
+                print("Erreur : Fichier introuvable.")  # Debug
+                messagebox.showerror("Erreur", "Un ou plusieurs fichiers sont introuvables.")
+            except UnicodeDecodeError:
+                print("Erreur : Problème d'encodage.")  # Debug
+                messagebox.showerror("Erreur", "Un ou plusieurs fichiers contiennent des caractères non valides ou un encodage incorrect.")
+            except Exception as e:
+                print(f"Erreur inattendue : {e}")  # Debug
+                messagebox.showerror("Erreur", f"Impossible de fusionner les fichiers :\n{str(e)}")
 
     def fusionner_lignes(self):
         """Fusionne les valeurs des cellules sélectionnées dans une ligne"""
@@ -268,8 +281,12 @@ class MyCellule:
 
                 messagebox.showinfo("Succès", "Fichier sauvegardé avec succès !")
 
+            except PermissionError:
+                print("Erreur : Permission refusée.")  # Debug
+                messagebox.showerror("Erreur", "Impossible de sauvegarder le fichier : Permission refusée.")
             except Exception as e:
-                messagebox.showerror("Erreur", f"Impossible de sauvegarder le fichier:\n{str(e)}")
+                print(f"Erreur inattendue : {e}")  # Debug
+                messagebox.showerror("Erreur", f"Impossible de sauvegarder le fichier :\n{str(e)}")
 
     def update_buttons(self):
         """Met à jour l'état des boutons"""
@@ -362,20 +379,62 @@ class MyCellule:
 
         if filename:
             try:
+                print(f"Chargement du fichier : {filename}")  # Debug
+
+                # Vérifier si le fichier est complètement vide
+                with open(filename, 'r', encoding='utf-8') as f:
+                    first_line = f.readline().strip()
+                    if not first_line:
+                        print("Le fichier est complètement vide.")  
+                        messagebox.showerror("Erreur", "Le fichier CSV est complètement vide.")
+                        return
+
                 # Charger le fichier CSV avec pandas
                 df = pd.read_csv(filename, delimiter=self.delimiteur)
+                print(f"Fichier chargé avec succès :\n{df}")  
+
+                # Vérifier si le fichier est vide après chargement
+                if df.empty:
+                    print("Le fichier est vide après chargement.")
+                    messagebox.showerror("Erreur", "Le fichier CSV est vide.")
+                    return
+
+                # Vérifier si le fichier contient des colonnes
+                if df.shape[1] == 0:
+                    print("Le fichier ne contient aucune colonne.")  
+                    messagebox.showerror("Erreur", "Le fichier CSV ne contient aucune colonne.")
+                    return
+
+                # Vérifier si le fichier contient des lignes
+                if df.shape[0] == 0:
+                    print("Le fichier ne contient aucune ligne.")  
+                    messagebox.showerror("Erreur", "Le fichier CSV ne contient aucune ligne.")
+                    return
 
                 # Limiter les données au nombre de cellules disponibles
                 max_rows, max_cols = len(self.cellules), len(self.cellules[0])
                 for i in range(min(len(df), max_rows)):
                     for j in range(min(len(df.columns), max_cols)):
+                        value = df.iloc[i, j]
+                        if pd.isna(value):  # Vérifie les valeurs manquantes
+                            value = ""
                         self.cellules[i][j].delete(0, tk.END)
-                        self.cellules[i][j].insert(0, str(df.iloc[i, j]))
+                        self.cellules[i][j].insert(0, str(value))
 
                 # Enregistrer l'état après chargement
                 self.mise_a_jour()
 
+            except pd.errors.EmptyDataError:
+                print("Erreur : Le fichier est vide ou mal formaté.") 
+                messagebox.showerror("Erreur", "Le fichier CSV est vide ou mal formaté.")
+            except pd.errors.ParserError:
+                print("Erreur : Problème d'analyse du fichier CSV.")  
+                messagebox.showerror("Erreur", "Erreur lors de l'analyse du fichier CSV.")
+            except UnicodeDecodeError:
+                print("Erreur : Problème d'encodage.")  
+                messagebox.showerror("Erreur", "Le fichier CSV contient des caractères non valides ou un encodage incorrect.")
             except Exception as e:
+                print(f"Erreur inattendue : {e}") 
                 messagebox.showerror("Erreur", f"Impossible de charger le fichier CSV :\n{str(e)}")
 
 
