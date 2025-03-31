@@ -37,7 +37,7 @@ class MyCellule: #la classe principale qui gère l'interface graphique et les fo
 
     def create_interface_graphique(self):
         """Crée une grille de cellules (21 lignes x 6 colonnes) avec des widgets Entry.
-Associe les touches directionnelles (<Up>, <Down>, <Left>, <Right>) pour naviguer entre les cellules.
+Associe les touches directionnelles (Up,Down,Left,Right) pour naviguer entre les cellules.
 Configure le redimensionnement dynamique des lignes et colonnes."""
         # Frame pour contenir la grille
         self.grille_frame = ttk.Frame(self.root)
