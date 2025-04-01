@@ -1,5 +1,5 @@
                   Membres du groupe
-                  
+ classe: IG2/B                 
 1-ATTOKO Maurel
 2-GLELE Jefferson (Rapporteur)
 3-KITSO Kévin
